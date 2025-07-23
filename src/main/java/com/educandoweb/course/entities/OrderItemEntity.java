@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_order_item")
-public class OrderItem implements Serializable {
+public class OrderItemEntity implements Serializable {
 
     @EmbeddedId
     private OrderItemPK id = new OrderItemPK();
@@ -19,10 +19,10 @@ public class OrderItem implements Serializable {
     private Integer quantity;
     private Double price;
 
-    public OrderItem() {
+    public OrderItemEntity() {
     }
 
-    public OrderItem(Order order, Product product, Integer quantity, Double price) {
+    public OrderItemEntity(OrderEntity order, ProductEntity product, Integer quantity, Double price) {
         id.setOrder(order);
         id.setProduct(product);
         this.quantity = quantity;
@@ -30,19 +30,19 @@ public class OrderItem implements Serializable {
     }
 
     @JsonIgnore
-    public Order getOrder() {
+    public OrderEntity getOrder() {
         return id.getOrder();
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         id.setOrder(order);
     }
 
-    public Product getProduct() {
+    public ProductEntity getProduct() {
         return id.getProduct();
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductEntity product) {
         id.setProduct(product);
     }
 
@@ -69,7 +69,7 @@ public class OrderItem implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        OrderItem orderItem = (OrderItem) o;
+        OrderItemEntity orderItem = (OrderItemEntity) o;
         return Objects.equals(id, orderItem.id);
     }
 

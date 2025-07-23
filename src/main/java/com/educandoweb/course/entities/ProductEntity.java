@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tb_product")
-public class Product implements Serializable {
+public class ProductEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,15 +22,15 @@ public class Product implements Serializable {
 
     @ManyToMany
     @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    private Set<CategoryEntity> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "id.product")
-    private Set<OrderItem> items = new HashSet<>();
+    private Set<OrderItemEntity> items = new HashSet<>();
 
-    public Product() {
+    public ProductEntity() {
     }
 
-    public Product(Long id, String description, String name, Double price, String imgUrl) {
+    public ProductEntity(Long id, String description, String name, Double price, String imgUrl) {
         this.id = id;
         this.description = description;
         this.name = name;
@@ -78,23 +78,25 @@ public class Product implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public Set<Category> getCategories() {
+    public Set<CategoryEntity> getCategories() {
         return categories;
     }
 
     @JsonIgnore
-    public Set<Order> getOrders() {
-        Set<Order> set = new HashSet<>();
-        for (OrderItem x : items) {
+    public Set<OrderEntity> getOrders() {
+        Set<OrderEntity> set = new HashSet<>();
+
+        for (OrderItemEntity x : items) {
             set.add(x.getOrder());
         }
+
         return set;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
+        ProductEntity product = (ProductEntity) o;
         return Objects.equals(id, product.id);
     }
 

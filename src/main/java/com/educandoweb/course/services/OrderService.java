@@ -1,7 +1,10 @@
 package com.educandoweb.course.services;
 
-import com.educandoweb.course.entities.Order;
+import com.educandoweb.course.dto.order.OrderResponseDTO;
+import com.educandoweb.course.entities.OrderEntity;
+import com.educandoweb.course.factories.OrderFactory;
 import com.educandoweb.course.repositories.OrderRepository;
+import com.educandoweb.course.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +17,21 @@ public class OrderService {
     @Autowired
     private OrderRepository repository;
 
-    public List<Order> findAll() {
-        return repository.findAll();
+    public List<OrderResponseDTO> findAll() {
+
+        List<OrderEntity> orders = repository.findAll();
+
+        return OrderFactory.convertToDto(orders);
     }
 
-    public Order findById(Long id) {
-        Optional<Order> obj = repository.findById(id);
-        return obj.get();
+    public OrderResponseDTO findById(Long id) {
+
+        Optional<OrderEntity> optionalEntity = repository.findById(id);
+
+        if (optionalEntity.isEmpty()) {
+            throw new ResourceNotFoundException("Order not found");
+        }
+
+        return OrderFactory.convertToDto(optionalEntity.get());
     }
 }

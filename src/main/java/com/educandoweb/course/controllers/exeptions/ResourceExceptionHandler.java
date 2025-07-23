@@ -1,6 +1,6 @@
-package com.educandoweb.course.resources.exeptions;
+package com.educandoweb.course.controllers.exeptions;
 
-import com.educandoweb.course.services.exeptions.DatabaseException;
+import com.educandoweb.course.services.exeptions.EntityInUseException;
 import com.educandoweb.course.services.exeptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -22,9 +22,9 @@ public class ResourceExceptionHandler {
     }
 
 
-    @ExceptionHandler(DatabaseException.class)
-    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
-        String error = "Database error";
+    @ExceptionHandler(EntityInUseException.class)
+    public ResponseEntity<StandardError> entityInUse(EntityInUseException e, HttpServletRequest request) {
+        String error = "Entity in use";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);

@@ -12,31 +12,30 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tb_order")
-public class Order implements Serializable {
+public class OrderEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant moment;
 
     private Integer orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    public User client;
+    public UserEntity client;
 
     @OneToMany(mappedBy = "id.order")
-    private Set<OrderItem> items = new HashSet<>();
+    private Set<OrderItemEntity> items = new HashSet<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Payment payment;
+    private PaymentEntity payment;
 
-    public Order() {
+    public OrderEntity() {
     }
 
-    public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
+    public OrderEntity(Long id, Instant moment, OrderStatus orderStatus, UserEntity client) {
         this.id = id;
         this.moment = moment;
         setOrderStatus(orderStatus);
@@ -64,43 +63,47 @@ public class Order implements Serializable {
     }
 
     public void setOrderStatus(OrderStatus orderStatus) {
+
         if (orderStatus != null) {
             this.orderStatus = orderStatus.getCode();
         }
     }
 
-    public User getClient() {
+    public UserEntity getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(UserEntity client) {
         this.client = client;
     }
 
-    public Payment getPayment() {
+    public PaymentEntity getPayment() {
         return payment;
     }
 
-    public void setPayment(Payment payment) {
+    public void setPayment(PaymentEntity payment) {
         this.payment = payment;
     }
 
-    public Set<OrderItem> getItems() {
+    public Set<OrderItemEntity> getItems() {
         return items;
     }
 
     public Double getTotal() {
+
         double sum = 0.0;
-        for (OrderItem x : items) {
+
+        for (OrderItemEntity x : items) {
             sum += x.getSubTotal();
         }
+
         return sum;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
+        OrderEntity order = (OrderEntity) o;
         return Objects.equals(id, order.id);
     }
 

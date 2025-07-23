@@ -10,21 +10,20 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tb_category")
-public class Category implements Serializable {
+public class CategoryEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "categories")
-    private Set<Product> products = new HashSet<>();
+    private Set<ProductEntity> products = new HashSet<>();
 
-    public Category() {
+    public CategoryEntity() {
     }
 
-    public Category(Long id, String name) {
+    public CategoryEntity(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -45,14 +44,16 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
+    public Set<ProductEntity> getProducts() {
         return products;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
+        CategoryEntity category = (CategoryEntity) o;
+
         return Objects.equals(id, category.id);
     }
 
@@ -60,5 +61,4 @@ public class Category implements Serializable {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
 }

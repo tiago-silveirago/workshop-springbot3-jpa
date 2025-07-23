@@ -9,22 +9,21 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_payment")
-public class Payment implements Serializable {
+public class PaymentEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Instant moment;
 
-    @JsonIgnore
     @OneToOne
     @MapsId
-    private Order order;
+    private OrderEntity order;
 
-    public Payment() {
+    public PaymentEntity() {
     }
 
-    public Payment(Long id, Instant moment, Order order) {
+    public PaymentEntity(Long id, Instant moment, OrderEntity order) {
         this.id = id;
         this.moment = moment;
         this.order = order;
@@ -41,7 +40,7 @@ public class Payment implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Payment payment = (Payment) o;
+        PaymentEntity payment = (PaymentEntity) o;
         return Objects.equals(id, payment.id);
     }
 
@@ -58,11 +57,11 @@ public class Payment implements Serializable {
         this.moment = moment;
     }
 
-    public Order getOrder() {
+    public OrderEntity getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         this.order = order;
     }
 }

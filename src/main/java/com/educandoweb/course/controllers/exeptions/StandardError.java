@@ -1,4 +1,4 @@
-package com.educandoweb.course.resources.exeptions;
+package com.educandoweb.course.controllers.exeptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

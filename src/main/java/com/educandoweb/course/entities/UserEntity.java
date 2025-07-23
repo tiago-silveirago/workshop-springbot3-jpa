@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,19 +20,28 @@ public class User implements Serializable {
     private String phone;
     private String password;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "client")
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
-    public User() {
+    public UserEntity() {
     }
 
-    public User(Long id, String name, String email, String phone, String password) {
+    public UserEntity(Long id, String name, String email, String phone, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
+    }
+
+    public UserEntity(String name, String email, String phone, String password) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+    }
+
+    public UserEntity(String name, String email, String phone) {
     }
 
     public Long getId() {
@@ -75,14 +84,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public List<Order> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        UserEntity user = (UserEntity) o;
         return id == user.id;
     }
 

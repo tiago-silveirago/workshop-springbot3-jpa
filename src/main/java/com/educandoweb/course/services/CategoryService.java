@@ -1,7 +1,11 @@
 package com.educandoweb.course.services;
 
-import com.educandoweb.course.entities.Category;
+import com.educandoweb.course.dto.category.CategoryResponseDTO;
+import com.educandoweb.course.entities.CategoryEntity;
+import com.educandoweb.course.entities.OrderEntity;
+import com.educandoweb.course.factories.CategoryFactory;
 import com.educandoweb.course.repositories.CategoryRepository;
+import com.educandoweb.course.services.exeptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +18,21 @@ public class CategoryService {
     @Autowired
     private CategoryRepository repository;
 
-    public List<Category> findAll() {
-        return repository.findAll();
+    public List<CategoryResponseDTO> findAll() {
+
+        List<CategoryEntity> categories = repository.findAll();
+
+        return CategoryFactory.convertToDto(categories);
     }
 
-    public Category findById(Long id) {
-        Optional<Category> obj = repository.findById(id);
-        return obj.get();
+    public CategoryResponseDTO findById(Long id) {
+
+        Optional<CategoryEntity> optionalEntity = repository.findById(id);
+
+        if (optionalEntity.isEmpty()) {
+            throw new ResourceNotFoundException("Category not found");
+        }
+
+        return CategoryFactory.convertToDto(optionalEntity.get());
     }
 }

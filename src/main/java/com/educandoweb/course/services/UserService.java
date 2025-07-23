@@ -1,17 +1,20 @@
 package com.educandoweb.course.services;
 
-import com.educandoweb.course.entities.User;
+import com.educandoweb.course.dto.user.UserRequestDTO;
+import com.educandoweb.course.dto.user.UserResponseDTO;
+import com.educandoweb.course.entities.UserEntity;
+import com.educandoweb.course.factories.UserFactory;
 import com.educandoweb.course.repositories.UserRepository;
-import com.educandoweb.course.services.exeptions.DatabaseException;
+import com.educandoweb.course.services.exeptions.EntityInUseException;
 import com.educandoweb.course.services.exeptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.educandoweb.course.factories.UserFactory.convertToDto;
 
 @Service
 public class UserService {
@@ -19,46 +22,58 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public List<User> findAll() {
-        return repository.findAll();
+    public List<UserResponseDTO> findAll() {
+
+        List<UserEntity> users = repository.findAll();
+
+        return convertToDto(users);
     }
 
-    public User findById(Long id) {
-        Optional<User> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+    public UserResponseDTO findById(Long id) {
+
+        Optional<UserEntity> optionalEntity = repository.findById(id);
+
+        if (optionalEntity.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        return UserFactory.convertToDto(optionalEntity.get());
     }
 
-    public User insert(User obj) {
-        return  repository.save(obj);
+    public UserResponseDTO insert(UserRequestDTO request) {
+
+        UserEntity entity = UserFactory.fromRequest(request);
+        UserEntity savedEntity = repository.save(entity);
+
+        return UserFactory.convertToDto(savedEntity);
     }
 
     public void delete(Long id) {
-       try {
-           if (!repository.existsById(id)) {
-               System.out.println("Error: User not found!");
-               throw new ResourceNotFoundException(id);
-           }
-           repository.deleteById(id);
-       } catch (EmptyResultDataAccessException e) {
-           throw new ResourceNotFoundException(id);
-       } catch (DataIntegrityViolationException e) {
-           throw new DatabaseException(e.getMessage());
-       }
-    }
 
-    public User update(Long id, User obj) {
+        UserEntity entity = UserFactory.fromResponse(findById(id));
+
         try {
-            User entity = repository.getReferenceById(id);
-            updateData(entity, obj);
-            return repository.save(entity);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(id);
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityInUseException("Invalid action. User is linked to one or more orders.");
         }
     }
 
-    private void updateData(User entity, User obj) {
-        entity.setName(obj.getName());
-        entity.setEmail(obj.getEmail());
-        entity.setPhone(obj.getPhone());
+    public UserResponseDTO update(Long id, UserRequestDTO request) {
+
+        UserFactory.fromResponse(findById(id));
+
+        UserEntity entity = repository.getReferenceById(id);
+        updateData(entity, request);
+        UserEntity savedUser = repository.save(entity);
+
+        return new UserResponseDTO(savedUser.getName(), savedUser.getEmail(), savedUser.getPhone());
+    }
+
+    private void updateData(UserEntity entity, UserRequestDTO request) {
+
+        entity.setName(request.name());
+        entity.setEmail(request.email());
+        entity.setPhone(request.phone());
     }
 }

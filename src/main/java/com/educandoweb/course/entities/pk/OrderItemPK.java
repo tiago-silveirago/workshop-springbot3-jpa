@@ -1,7 +1,7 @@
 package com.educandoweb.course.entities.pk;
 
-import com.educandoweb.course.entities.Order;
-import com.educandoweb.course.entities.Product;
+import com.educandoweb.course.entities.OrderEntity;
+import com.educandoweb.course.entities.ProductEntity;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -14,25 +14,25 @@ public class OrderItemPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private OrderEntity order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ProductEntity product;
 
-    public Order getOrder() {
+    public OrderEntity getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         this.order = order;
     }
 
-    public Product getProduct() {
+    public ProductEntity getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductEntity product) {
         this.product = product;
     }
 
